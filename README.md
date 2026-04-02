@@ -37,7 +37,9 @@ Infrastructure reporting in many communities often becomes a "black hole"—issu
 
 | Live Community Dashboard | Smart Reporting Form | Operations Management |
 |--------------------------|-------------------|---------------------|
-|  | *(Insert screenshot here)* |<img width="910" height="420" alt="image" src="https://github.com/user-attachments/assets/53c59d6d-5f09-47e0-a318-0c4792c6110d" />
+|<img width="910" height="420" alt="image" src="https://github.com/user-attachments/assets/b1a34d3c-83c5-4782-a1c7-72eef167ba72" />
+  | <img width="910" height="419" alt="image" src="https://github.com/user-attachments/assets/00d0f430-a133-4cd6-ba30-caad5af9dbe6" />
+ |<img width="910" height="420" alt="image" src="https://github.com/user-attachments/assets/53c59d6d-5f09-47e0-a318-0c4792c6110d" />
 |
 
 > ⚠️ Replace placeholders with actual screenshots from your repository
