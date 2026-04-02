@@ -1,84 +1,53 @@
-VoltGuard Pro: Community Fault System ⚡
+# ⚡ VoltGuard Pro: Community Fault System
 
-VoltGuard Pro is a sophisticated sociotechnical platform developed for the NHCI63110 assignment. It bridges the communication gap between community members and municipal infrastructure teams by providing real-time, geospatial tracking of electrical and utility faults.
-🚀 Project Overview
+**VoltGuard Pro** is a sophisticated sociotechnical platform developed for the **NHCI63110** assignment. It bridges the communication gap between community members and municipal infrastructure teams by providing **real-time, geospatial tracking** of electrical and utility faults.
 
-In many communities, infrastructure reporting is a "black hole"—users report issues but never receive feedback. VoltGuard Pro solves this by using a Bento Box UI that provides immediate visual confirmation of fault status (Pending, In Progress, Resolved) through an interactive Google Maps interface.
-Core Features
+---
 
-    Live Geospatial Dashboard: Real-time mapping of faults using the Google Maps API.
+## 🚀 Project Overview
 
-    Smart Reporting: A mobile-responsive form with Auto-GPS detection for high-accuracy location logging.
+Infrastructure reporting in many communities often becomes a "black hole"—issues are reported but feedback is rarely received. **VoltGuard Pro** solves this by providing:
 
-    Operations Center: A secure, administrative portal for technicians to manage the incident queue and dispatch crews.
+- Immediate visual confirmation of fault status: **Pending**, **In Progress**, **Resolved**
+- A **Bento Box-style UI** with interactive Google Maps integration
+- Real-time synchronization between community users and administrative staff
 
-    Status Synchronization: Automated color-coding (Red/Blue/Green) that updates across the user and admin portals simultaneously.
+---
 
-🛠️ Tech Stack
+## 🌟 Core Features
 
-    Backend: Python / Django (MVT Architecture)
+- **Live Geospatial Dashboard:** Real-time mapping of reported faults via the Google Maps API
+- **Smart Reporting:** Mobile-responsive form with **Auto-GPS detection** for accurate location logging
+- **Operations Center:** Secure admin portal for technicians to manage incident queues and dispatch crews
+- **Status Synchronization:** Automatic **color-coded status** updates (🔴 Pending / 🔵 In Progress / 🟢 Resolved) across user and admin portals
 
-    Frontend: Tailwind CSS (Glassmorphism design), JavaScript
+---
 
-    Database: SQLite (Development) / PostgreSQL (Production ready)
+## 🛠️ Tech Stack
 
-    APIs: Google Maps JavaScript API, Geolocation API
+- **Backend:** Python / Django (MVT Architecture)
+- **Frontend:** Tailwind CSS (Glassmorphism design), JavaScript
+- **Database:** SQLite (Development) / PostgreSQL (Production-ready)
+- **APIs:** Google Maps JavaScript API, Geolocation API
+- **Design Principles:** Human-Computer Interaction (HCI), Responsive Grid Layout
 
-    Design: Human-Computer Interaction (HCI) principles, Responsive Grid Layout
+---
 
-📸 System Screenshots
-Live Community Dashboard	Smart Reporting Form	Operations Management
-		
-(Note: Please replace these with your actual screenshot files in your repository)		
-⚙️ Installation & Setup
+## 📸 System Screenshots
 
-    Clone the repository:
-    Bash
+| Live Community Dashboard | Smart Reporting Form | Operations Management |
+|--------------------------|-------------------|---------------------|
+| <img width="910" height="420" alt="image" src="https://github.com/user-attachments/assets/f98c05ff-4e57-473d-be77-0c29530b303d" />
+ | <img width="910" height="419" alt="image" src="https://github.com/user-attachments/assets/84cbbdc5-8e2f-4082-b3fe-0b63524ad5e0" />
+ | <img width="910" height="420" alt="image" src="https://github.com/user-attachments/assets/8418350c-62f3-4c76-a9fc-7cafaabc449e" />
+ |
 
-    git clone [Your GitHub Link Here]
-    cd community_fault_system
 
-    Create a Virtual Environment:
-    Bash
+---
 
-    python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
+## ⚙️ Installation & Setup
 
-    Install Dependencies:
-    Bash
-
-    pip install -r requirements.txt
-
-    Run Migrations:
-    Bash
-
-    python manage.py migrate
-
-    Start the Server:
-    Bash
-
-    python manage.py runserver
-
-    Access the app at http://127.0.0.1:8000/
-
-🧪 Iterative Design & AI Evaluation
-
-This project followed a rigorous Iterative Design Process. Initial wireframes were critiqued by AI tools to identify usability bottlenecks.
-
-    Improvement: Based on AI feedback, a Success Modal was added to provide users with a Reference ID, improving the "Visibility of System Status."
-
-    Improvement: The "Smart Location" feature was implemented to reduce manual data entry errors for mobile users.
-
-👨‍💻 Developer Information
-
-    Name: Richard Ramashala
-
-    Student Number: 202306214
-
-    Module: NHCI63110 - Human-Computer Interaction
-
-    Institution: [Your Institution Name]
-
-📄 License
-
-This project is for academic purposes as part of the NHCI63110 curriculum.
+**1. Clone the repository:**
+```bash
+git clone https://github.com/thabo-bit/VoltGuard-Pro-Community_Fault_System-.git
+cd community_fault_system
