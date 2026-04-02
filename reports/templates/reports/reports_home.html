@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Fault | VoltGuard PRO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtU110neEfr6fbua2-omXWpKEC2Oo6K2U&libraries=places"></script>
+
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .orange-gradient { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+        .pac-container { border-radius: 1.5rem; border: none; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); margin-top: 8px; font-family: 'Plus Jakarta Sans'; padding: 10px; z-index: 9999; }
+    </style>
+</head>
+<body class="bg-[#f8fafc] min-h-screen">
+
+    <nav class="glass sticky top-0 z-50 px-6 py-4 border-b border-slate-200">
+        <div class="max-w-[1600px] mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="orange-gradient p-2 rounded-xl shadow-lg">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <h1 class="text-xl font-extrabold tracking-tighter text-slate-800 uppercase">VoltGuard <span class="text-orange-500">PRO</span></h1>
+            </div>
+            <div class="flex items-center gap-8 text-sm font-bold text-slate-600">
+                <a href="{% url 'report_page' %}" class="text-orange-600 border-b-2 border-orange-600 pb-1">Report Issue</a>
+                <a href="{% url 'dashboard_page' %}" class="hover:text-blue-600 transition">Live Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 py-12">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+            <div>
+                <h1 class="text-4xl font-black text-slate-900 tracking-tight">Community Reporting</h1>
+                <p class="text-slate-500 mt-2 font-light text-lg">Logged issues automatically sync to the Neighborhood Dashboard.</p>
+            </div>
+            <div class="bg-blue-900 text-white px-6 py-3 rounded-2xl flex items-center gap-3 shadow-xl">
+                <span class="w-3 h-3 bg-green-400 rounded-full animate-ping"></span>
+                <span class="text-sm font-bold uppercase tracking-wider">System Online</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            <div class="lg:col-span-7 bg-white p-10 rounded-[3rem] shadow-2xl border border-slate-100 relative overflow-hidden">
+                <div class="absolute top-0 left-10 w-20 h-1 bg-orange-500"></div>
+                
+                <form id="faultForm" method="POST" class="space-y-8">
+                    {% csrf_token %}
+                    {{ form.latitude }}
+                    {{ form.longitude }}
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-black text-slate-400 uppercase mb-3">Fault Category</label>
+                            {{ form.category }}
+                        </div>
+                        <div>
+                            <label class="block text-xs font-black text-slate-400 uppercase mb-3">Search Street</label>
+                            {{ form.street_name }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-black text-slate-400 uppercase mb-3">Incident Description</label>
+                        {{ form.description }}
+                    </div>
+
+                    <button type="submit" class="w-full py-5 orange-gradient text-white font-black rounded-2xl shadow-2xl transform transition active:scale-95 text-lg uppercase tracking-widest">
+                        Send to Neighborhood Board
+                    </button>
+                </form>
+
+                {% if success %}
+                <div id="successOverlay" class="absolute inset-0 bg-white/95 flex flex-col items-center justify-center p-10 text-center z-20">
+                    <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <h2 class="text-3xl font-black text-slate-900">Report Logged!</h2>
+                    <p class="text-slate-500 mt-2">Reference ID: <span class="text-orange-600 font-bold">#VG-{{ reference_id }}</span></p>
+                    <a href="{% url 'dashboard_page' %}" class="mt-8 px-8 py-3 bg-blue-600 text-white font-bold rounded-xl shadow-lg inline-block">View on Dashboard</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="lg:col-span-5 space-y-6">
+                <div class="bg-slate-900 text-white p-8 rounded-[3rem] shadow-2xl relative overflow-hidden">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                        Smart Location
+                    </h3>
+                    
+                    <button type="button" onclick="getLocation()" id="geoBtn" class="w-full py-4 bg-white text-slate-900 font-black rounded-2xl hover:bg-orange-500 hover:text-white transition flex items-center justify-center gap-2 mb-6">
+                        <span id="btnText">Auto-Detect My GPS</span>
+                    </button>
+
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Detected Coordinates</label>
+                        <input type="text" id="displayCoords" readonly 
+                            class="w-full bg-slate-800 border border-slate-700 rounded-xl p-4 text-orange-400 font-mono text-xs outline-none" 
+                            placeholder="Waiting for GPS signal...">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // GOOGLE AUTOCOMPLETE LOGIC
+        function initAutocomplete() {
+            const streetInput = document.getElementById('id_street_name');
+            if (!streetInput) return;
+
+            const autocomplete = new google.maps.places.Autocomplete(streetInput, {
+                types: ['address'],
+                componentRestrictions: { country: "za" } 
+            });
+
+            autocomplete.addListener('place_changed', function() {
+                const place = autocomplete.getPlace();
+                if (place.geometry) {
+                    const lat = place.geometry.location.lat();
+                    const lng = place.geometry.location.lng();
+                    const fullAddress = place.formatted_address;
+
+                    document.getElementById('id_latitude').value = lat;
+                    document.getElementById('id_longitude').value = lng;
+                    
+                    // Put full address back into the main Search box
+                    streetInput.value = fullAddress;
+                    document.getElementById('displayCoords').value = `LAT: ${lat.toFixed(6)} | LNG: ${lng.toFixed(6)}`;
+                }
+            });
+        }
+
+        window.addEventListener('load', initAutocomplete);
+
+        // BROWSER GPS LOGIC
+        function getLocation() {
+            const btn = document.getElementById('geoBtn');
+            const btnText = document.getElementById('btnText');
+            const streetInput = document.getElementById('id_street_name');
+            
+            btnText.innerText = "Locating...";
+            btn.classList.add('animate-pulse');
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        
+                        document.getElementById('id_latitude').value = lat;
+                        document.getElementById('id_longitude').value = lng;
+                        document.getElementById('displayCoords').value = `LAT: ${lat.toFixed(6)} | LNG: ${lng.toFixed(6)}`;
+                        
+                        // Update Search Street text to show GPS was used
+                        streetInput.value = "GPS Location Captured";
+                        
+                        btnText.innerText = "Location Captured!";
+                        btn.classList.remove('animate-pulse');
+                        btn.classList.replace('bg-white', 'bg-green-500');
+                        btn.classList.add('text-white');
+                    },
+                    (error) => {
+                        btnText.innerText = "Auto-Detect My GPS";
+                        btn.classList.remove('animate-pulse');
+                        // Handle common errors
+                        if(error.code == 1) alert("Please allow location access in your browser settings.");
+                        else alert("GPS signal not found. Please type address manually.");
+                    },
+                    { timeout: 10000 } // Stops waiting after 10 seconds
+                );
+            }
+        }
+    </script>
+</body>
+</html>

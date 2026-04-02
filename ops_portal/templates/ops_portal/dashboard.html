@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ops Portal | VoltGuard PRO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .orange-gradient { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+    </style>
+</head>
+<body class="min-h-screen flex">
+
+    <aside class="w-64 glass border-r border-slate-200 hidden md:flex flex-col p-6 sticky top-0 h-screen">
+        <div class="flex items-center gap-2 mb-8 px-2">
+            <div class="w-8 h-8 orange-gradient rounded-lg flex items-center justify-center shadow-lg">
+                <span class="text-white font-black text-xs">VG</span>
+            </div>
+            <h1 class="font-extrabold text-slate-800 tracking-tight">OPS <span class="text-orange-500">CENTER</span></h1>
+        </div>
+        <nav class="space-y-1 flex-1">
+            <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-orange-50 text-orange-600 font-bold">Active Queue</a>
+            <a href="#" class="flex items-center gap-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition font-medium">Technicians</a>
+            <a href="#" class="flex items-center gap-3 p-3 rounded-xl text-slate-500 hover:bg-slate-50 transition font-medium">History</a>
+        </nav>
+        
+        <a href="{% url 'ops_logout' %}" class="flex items-center gap-3 p-3 rounded-xl text-red-500 hover:bg-red-50 transition font-bold mt-auto">
+            Logout
+        </a>
+    </aside>
+
+    <main class="flex-1 p-8">
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h2 class="text-2xl font-black text-slate-800 tracking-tight uppercase">Incident Management</h2>
+                <p class="text-slate-500 text-sm">Real-time fault tracking and technician dispatch.</p>
+            </div>
+            <div class="bg-white px-4 py-2 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                <span class="text-xs font-bold text-slate-600 uppercase tracking-wider">System Live</span>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Reported</p>
+                <h3 class="text-3xl font-black text-slate-800">{{ reports.count }}</h3>
+            </div>
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Pending Action</p>
+                <h3 class="text-3xl font-black text-red-500">{{ total_active }}</h3>
+            </div>
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">In Progress</p>
+                <h3 class="text-3xl font-black text-blue-600">{{ in_progress }}</h3>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-[2rem] border border-slate-200 shadow-xl overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-slate-50/50 border-b border-slate-100">
+                    <tr>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Category</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Location</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Status</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Reported</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    {% for report in reports %}
+                    <tr class="hover:bg-slate-50 transition cursor-pointer" 
+                        onclick="openStatusModal('{{ report.id }}', '{{ report.status }}', '{{ report.category }}')">
+                        <td class="px-6 py-5 font-bold text-slate-800">{{ report.category }}</td>
+                        <td class="px-6 py-5 text-sm text-slate-600 font-medium">{{ report.street_name }}</td>
+                        <td class="px-6 py-5">
+                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase 
+                                {% if report.status == 'PENDING' %} bg-red-100 text-red-600 
+                                {% elif report.status == 'IN_PROGRESS' %} bg-blue-100 text-blue-600 
+                                {% else %} bg-green-100 text-green-600 {% endif %}">
+                                {{ report.status }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-5 text-xs text-slate-400 font-bold">{{ report.created_at|date:"d M, H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-20 text-center text-slate-400 font-bold">No active reports in the queue.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div id="statusModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2.5rem] w-full max-w-md shadow-2xl overflow-hidden transform transition-all border border-white/20">
+            <div class="orange-gradient p-8 text-white">
+                <h3 class="text-2xl font-black uppercase tracking-tight">Update Status</h3>
+                <p class="text-orange-100 text-sm font-medium" id="modalFaultTitle">Fault Category</p>
+            </div>
+            
+            <form id="updateForm" method="POST" class="p-8">
+                {% csrf_token %}
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Select Action</label>
+                <select name="status" id="statusSelect" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-orange-500 transition font-bold text-slate-700 mb-6">
+                    <option value="PENDING">PENDING</option>
+                    <option value="IN_PROGRESS">IN PROGRESS</option>
+                    <option value="RESOLVED">RESOLVED</option>
+                </select>
+                
+                <div class="flex gap-3">
+                    <button type="button" onclick="closeModal()" class="flex-1 py-4 bg-slate-100 text-slate-500 font-bold rounded-2xl hover:bg-slate-200 transition">Cancel</button>
+                    <button type="submit" class="flex-1 py-4 orange-gradient text-white font-bold rounded-2xl shadow-lg hover:shadow-orange-200 transition">Save Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openStatusModal(id, currentStatus, category) {
+            const modal = document.getElementById('statusModal');
+            const form = document.getElementById('updateForm');
+            const title = document.getElementById('modalFaultTitle');
+            const select = document.getElementById('statusSelect');
+
+            form.action = `/ops/update-fault/${id}/`;
+            title.innerText = category;
+            select.value = currentStatus;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('statusModal').classList.add('hidden');
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('statusModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
